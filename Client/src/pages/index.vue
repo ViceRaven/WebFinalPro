@@ -1,6 +1,22 @@
 <template>
   <div class="container">
-    <h1>Welcome to your online exercise tracker!</h1>
+    <h1 class="shadow">Welcome to your online exercise tracker!</h1>
+    
+    <!-- Profile Creation Form -->
+    <form id="profile-form" @submit.prevent="createProfile">
+      <input type="text" v-model="profile.name" placeholder="Name" required>
+      <input type="email" v-model="profile.email" placeholder="Email" required>
+      <button type="submit">Create Profile</button>
+    </form>
+    
+    <!-- Profile Display and Management -->
+    <div v-if="profileCreated" class="profile">
+      <h2>Profile</h2>
+      <p><strong>Name:</strong> {{ profile.name }}</p>
+      <p><strong>Email:</strong> {{ profile.email }}</p>
+      <button @click="editProfile">Edit Profile</button>
+    </div>
+    
     <form id="exercise-form">
       <input type="text" id="exercise" placeholder="Exercise" required>
       <input type="number" id="duration" placeholder="Duration (minutes)" required>
@@ -12,13 +28,28 @@
 
 <script>
 export default {
-  name: 'Index'
+  name: 'Index',
+  data() {
+    return {
+      profile: {
+        name: '',
+        email: ''
+      },
+      profileCreated: false
+    };
+  },
+  methods: {
+    createProfile() {
+      this.profileCreated = true;
+    },
+    editProfile() {
+      this.profileCreated = false;
+    }
+  }
 }
 </script>
 
 <style scoped>
-
-
 .container {
   max-width: 600px;
   margin: 0 auto;
@@ -28,9 +59,10 @@ export default {
 }
 
 h1 {
-  text-align: left;
+  text-align: center;
   color: #333;
   font-size: 5em;
+  font-family: 'Roboto', sans-serif;
 }
 
 form {
@@ -53,5 +85,12 @@ button {
 
 button:hover {
   background-color: #0056b3;
+}
+
+.profile {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #e9ecef;
+  border-radius: 8px;
 }
 </style>
