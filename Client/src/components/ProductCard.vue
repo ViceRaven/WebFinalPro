@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { Product } from '@/models/products';
+import type { Exercise } from '@/models/Exercise';
 
 defineProps<{
-    product: Product
+    exercise: Exercise
 }>()
 </script>
 

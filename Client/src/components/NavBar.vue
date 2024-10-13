@@ -23,7 +23,7 @@ const isOpen = ref(false)
       <div class="navbar-menu" :class="{ 'is-active': isOpen }">
         <div class="navbar-start">
           <RouterLink to="/" class="navbar-item">Home</RouterLink>
-          <RouterLink to="/products" class="navbar-item">Shop</RouterLink>
+          <RouterLink to="/products" class="navbar-item">Exercise Log</RouterLink>
 
 
           <div class="navbar-item has-dropdown is-hoverable">
