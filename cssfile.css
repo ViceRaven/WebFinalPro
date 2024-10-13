@@ -388,7 +388,7 @@ button:hover, .button:hover {
     background-color: #00d1b2;
     height: 100%;
     border-radius: 5px;
-    display: ;
+    display: flex;
   }
   
 .form-group {
