@@ -55,7 +55,7 @@ user.value = { name: 'John Doe' }; // Comment this line out when integrating wit
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
-              <template v-if="user.value">
+              <template v-if="user">
                 <RouterLink to="/ManageProfile" class="button is-primary">
                   Manage Profile
                 </RouterLink>
