@@ -23,6 +23,13 @@
       <button type="submit">Add Exercise</button>
     </form>
     <ul id="exercise-list"></ul>
+    
+    <h2>Example Exercises</h2>
+    <ul id="exercise-list">
+      <li v-for="exercise in exercises" :key="exercise.id">
+        {{ exercise.name }} - {{ exercise.duration }} minutes
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -31,6 +38,7 @@ export default {
   name: 'Index',
   data() {
     return {
+<<<<<<< HEAD
       profile: {
         name: '',
         email: ''
@@ -45,6 +53,14 @@ export default {
     editProfile() {
       this.profileCreated = false;
     }
+=======
+      exercises: [
+        { id: 1, name: 'Push-ups', duration: 10 },
+        { id: 2, name: 'Running', duration: 30 },
+        { id: 3, name: 'Yoga', duration: 45 }
+      ]
+    };
+>>>>>>> 3bf3193 (more progress)
   }
 }
 </script>
@@ -87,6 +103,7 @@ button:hover {
   background-color: #0056b3;
 }
 
+<<<<<<< HEAD
 .profile {
   margin-top: 20px;
   padding: 10px;
@@ -94,3 +111,20 @@ button:hover {
   border-radius: 8px;
 }
 </style>
+=======
+#exercise-list {
+  margin-top: 20px;
+}
+
+#exercise-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+</style>
+>>>>>>> 3bf3193 (more progress)
