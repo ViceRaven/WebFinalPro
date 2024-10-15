@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { RouterLink } from 'vue-router'
+import { RouterLink } from 'vue-router';
 
-const isOpen = ref(false)
+const isOpen = ref(false);
+const user = ref(null); // Replace this with your actual user authentication logic
+
+// Example of setting user data (this should be replaced with actual authentication logic)
+user.value = { name: 'John Doe' }; // Comment this line out when integrating with real authentication
 </script>
 
 <template>
@@ -24,7 +28,6 @@ const isOpen = ref(false)
         <div class="navbar-start">
           <RouterLink to="/" class="navbar-item">Home</RouterLink>
           <RouterLink to="/products" class="navbar-item">Exercise Log</RouterLink>
-
 
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link">
@@ -52,12 +55,16 @@ const isOpen = ref(false)
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
-              <a class="button is-primary">
-                <strong>Sign up</strong>
-              </a>
-              <a class="button is-light">
-                Log in
-              </a>
+              <template v-if="user.value">
+                <RouterLink to="/ManageProfile" class="button is-primary">
+                  Manage Profile
+                </RouterLink>
+              </template>
+              <template v-else>
+                <RouterLink to="/login" class="button is-light">
+                  Log in
+                </RouterLink>
+              </template>
             </div>
           </div>
         </div>
@@ -68,7 +75,6 @@ const isOpen = ref(false)
 
 <style scoped>
 .router-link-active {
-
   font-weight: bold;
   border-bottom: 2px solid blue;
 }
