@@ -13,6 +13,19 @@
         <ul>
             <li v-for="exercise in allTimeExercises" :key="exercise.id">{{ exercise.name }} - {{ exercise.duration }} mins</li>
         </ul>
+        
+        <h2>Log New Exercise</h2>
+        <form @submit.prevent="addExercise">
+            <div>
+                <label for="name">Exercise Name:</label>
+                <input type="text" v-model="newExercise.name" required>
+            </div>
+            <div>
+                <label for="duration">Duration (mins):</label>
+                <input type="number" v-model="newExercise.duration" required>
+            </div>
+            <button type="submit">Add Exercise</button>
+        </form>
     </div>
 </template>
 
@@ -38,8 +51,23 @@ export default {
                 { id: 4, name: 'Yoga', duration: 40 },
                 { id: 5, name: 'Hiking', duration: 120 },
                 { id: 6, name: 'Weightlifting', duration: 50 }
-            ]
+            ],
+            newExercise: {
+                name: '',
+                duration: ''
+            }
         };
+    },
+    methods: {
+        addExercise() {
+            const newId = this.allTimeExercises.length + 1;
+            const exercise = { id: newId, ...this.newExercise };
+            this.todayExercises.push(exercise);
+            this.weekExercises.push(exercise);
+            this.allTimeExercises.push(exercise);
+            this.newExercise.name = '';
+            this.newExercise.duration = '';
+        }
     }
 };
 </script>
@@ -54,5 +82,17 @@ ul {
 }
 li {
     margin: 5px 0;
+}
+form {
+    margin-top: 20px;
+}
+form div {
+    margin-bottom: 10px;
+}
+label {
+    margin-right: 10px;
+}
+button {
+    padding: 5px 10px;
 }
 </style>
