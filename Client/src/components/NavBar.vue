@@ -6,20 +6,25 @@
         <li><router-link to="/">Home</router-link></li>
         <li><router-link to="/about">About</router-link></li>
         <li><router-link to="/contact">Contact</router-link></li>
+        <li><router-link to="/social">Social</router-link></li> <!-- Added Social link -->
         <li class="dropdown">
           <span>Users</span>
           <ul class="dropdown-content">
-            <li @click="loginUser('Rachel', 'https://i.redd.it/dy6aw0azuicc1.jpeg')"><router-link to="/rachel">Rachel</router-link></li>
-            <li @click="loginUser('Max', 'https://upload.wikimedia.org/wikipedia/en/2/20/MaxCaulfield.png')"><router-link to="/max">Max</router-link></li>
-            <li @click="loginUser('Chloe', 'https://upload.wikimedia.org/wikipedia/en/9/95/ChloePriceLifeIsStrange.png')"><router-link to="/chloe">Chloe</router-link></li>
+            <li @click="loginUser('Rachel', 'https://i.redd.it/dy6aw0azuicc1.jpeg', true)"><router-link to="/rachel">Rachel</router-link></li>
+            <li @click="loginUser('Max', 'https://upload.wikimedia.org/wikipedia/en/2/20/MaxCaulfield.png', false)"><router-link to="/max">Max</router-link></li>
+            <li @click="loginUser('Chloe', 'https://upload.wikimedia.org/wikipedia/en/9/95/ChloePriceLifeIsStrange.png', false)"><router-link to="/chloe">Chloe</router-link></li>
           </ul>
         </li>
       </ul>
     </div>
     <div v-if="loggedInUser" class="user-info">
       <img :src="loggedInUser.picture" alt="User Picture" class="user-picture" />
-      <span>{{ loggedInUser.name }}</span>
+      <router-link :to="`/${loggedInUser.name.toLowerCase()}/manage-profile`">{{ loggedInUser.name }}</router-link>
+      <router-link :to="`/${loggedInUser.name.toLowerCase()}/manage-profile`" class="manage-profile-button">Manage Profile</router-link>
       <button @click="logoutUser" class="logout-button">Sign Out</button>
+    </div>
+    <div v-if="isAdmin" class="admin-link">
+      <router-link to="/admin">Admin</router-link>
     </div>
   </nav>
 </template>
@@ -29,14 +34,17 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const loggedInUser = ref<{ name: string, picture: string } | null>(null);
+const isAdmin = ref(false);
 const router = useRouter();
 
-function loginUser(name: string, picture: string) {
+function loginUser(name: string, picture: string, admin: boolean) {
   loggedInUser.value = { name, picture };
+  isAdmin.value = admin;
 }
 
 function logoutUser() {
   loggedInUser.value = null;
+  isAdmin.value = false;
   router.push('/');
 }
 </script>
@@ -125,6 +133,29 @@ function logoutUser() {
   margin-right: 10px;
 }
 
+.user-info a {
+  color: white;
+  text-decoration: none;
+}
+
+.user-info a:hover {
+  text-decoration: underline;
+}
+
+.manage-profile-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-left: 10px;
+  text-decoration: none;
+}
+
+.manage-profile-button:hover {
+  background-color: #45a049;
+}
+
 .logout-button {
   background-color: #f44336;
   color: white;
@@ -136,5 +167,19 @@ function logoutUser() {
 
 .logout-button:hover {
   background-color: #d32f2f;
+}
+
+.admin-link {
+  margin-left: 20px;
+}
+
+.admin-link a {
+  color: #FFD700;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.admin-link a:hover {
+  text-decoration: underline;
 }
 </style>

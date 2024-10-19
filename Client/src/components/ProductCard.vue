@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Exercise } from '@/models/Exercise';
+import type { Exercise } from '@/models/UserData';
 
 defineProps<{
     exercise: Exercise
