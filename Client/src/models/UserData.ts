@@ -1,5 +1,3 @@
-// src/data/UserData.ts
-
 export interface ExerciseData {
     running: string;
     yoga: string;
@@ -18,9 +16,55 @@ export interface ExerciseData {
     };
   }
   
-  export const userData: UserProfile = {
-    username: 'JohnDoe',
-    email: 'john.doe@example.com',
+  export const maxProfile: UserProfile = {
+    username: 'Max',
+    email: 'max@example.com',
+    password: 'password123',
+    backgroundColor: '#ffffff',
+    exerciseData: {
+      today: {
+        running: '5 km',
+        yoga: '30 minutes'
+      },
+      thisWeek: {
+        running: '25 km',
+        yoga: '3 hours',
+        swimming: '2 hours'
+      },
+      allTime: {
+        running: '500 km',
+        yoga: '50 hours',
+        swimming: '20 hours'
+      }
+    }
+  };
+  
+  export const chloeProfile: UserProfile = {
+    username: 'Chloe',
+    email: 'chloe@example.com',
+    password: 'password123',
+    backgroundColor: '#ffffff',
+    exerciseData: {
+      today: {
+        running: '5 km',
+        yoga: '30 minutes'
+      },
+      thisWeek: {
+        running: '25 km',
+        yoga: '3 hours',
+        swimming: '2 hours'
+      },
+      allTime: {
+        running: '500 km',
+        yoga: '50 hours',
+        swimming: '20 hours'
+      }
+    }
+  };
+  
+  export const rachelProfile: UserProfile = {
+    username: 'Rachel',
+    email: 'rachel@example.com',
     password: 'password123',
     backgroundColor: '#ffffff',
     exerciseData: {

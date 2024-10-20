@@ -28,44 +28,13 @@
   </template>
   
   <script lang="ts">
-  import { defineComponent, reactive, onMounted } from 'vue';
-  
+  import { defineComponent, reactive } from 'vue';
+  import { maxProfile, chloeProfile, rachelProfile, UserProfile } from '@/data/UserData';
   
   export default defineComponent({
     name: 'ManageProfile',
     setup() {
-      const profile = reactive({
-        username: '',
-        email: '',
-        password: '',
-        backgroundColor: '#ffffff',
-        exerciseData: {
-          today: {
-            running: '',
-            yoga: ''
-          },
-          thisWeek: {
-            running: '',
-            yoga: '',
-            swimming: ''
-          },
-          allTime: {
-            running: '',
-            yoga: '',
-            swimming: ''
-          }
-        }
-      });
-  
-      const fetchProfileData = async () => {
-        try {
-          const response = await axios.get('/src/data/users.json');
-          const userData = response.data.find((user: any) => user.username === 'Chloe'); // Example: Fetch data for Chloe
-          Object.assign(profile, userData);
-        } catch (error) {
-          console.error('Error fetching profile data:', error);
-        }
-      };
+      const profile = reactive<UserProfile>({ ...maxProfile }); // Change this to dynamically load the correct profile
   
       const updateProfile = () => {
         // Logic to update the profile
@@ -76,10 +45,6 @@
         // Logic to sign out the user
         console.log('User signed out');
       };
-  
-      onMounted(() => {
-        fetchProfileData();
-      });
   
       return {
         profile,
