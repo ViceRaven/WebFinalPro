@@ -4,19 +4,37 @@
     <div class="card">
       <h2>Today</h2>
       <ul>
-        <li v-for="exercise in todayExercises" :key="exercise.id">{{ exercise.name }} - {{ exercise.duration }} mins</li>
+        <li v-for="(exercise, index) in todayExercises" :key="exercise.id">
+          {{ exercise.name }} - {{ exercise.duration }} mins
+          <div class="buttons">
+            <button @click="editExercise('today', index)">Edit</button>
+            <button @click="deleteExercise('today', index)">Delete</button>
+          </div>
+        </li>
       </ul>
     </div>
     <div class="card">
       <h2>This Week</h2>
       <ul>
-        <li v-for="exercise in weekExercises" :key="exercise.id">{{ exercise.name }} - {{ exercise.duration }} mins</li>
+        <li v-for="(exercise, index) in weekExercises" :key="exercise.id">
+          {{ exercise.name }} - {{ exercise.duration }} mins
+          <div class="buttons">
+            <button @click="editExercise('week', index)">Edit</button>
+            <button @click="deleteExercise('week', index)">Delete</button>
+          </div>
+        </li>
       </ul>
     </div>
     <div class="card">
       <h2>All Time</h2>
       <ul>
-        <li v-for="exercise in allTimeExercises" :key="exercise.id">{{ exercise.name }} - {{ exercise.duration }} mins</li>
+        <li v-for="(exercise, index) in allTimeExercises" :key="exercise.id">
+          {{ exercise.name }} - {{ exercise.duration }} mins
+          <div class="buttons">
+            <button @click="editExercise('allTime', index)">Edit</button>
+            <button @click="deleteExercise('allTime', index)">Delete</button>
+          </div>
+        </li>
       </ul>
     </div>
     
@@ -31,7 +49,7 @@
           <label for="duration">Duration (mins):</label>
           <input type="number" v-model="newExercise.duration" required>
         </div>
-        <button type="submit">Add Exercise</button>
+        <button type="submit">{{ editIndex !== null ? 'Update Exercise' : 'Add Exercise' }}</button>
       </form>
     </div>
   </div>
@@ -59,18 +77,42 @@ export default {
       newExercise: {
         name: '',
         duration: ''
-      }
+      },
+      editIndex: null,
+      editCategory: ''
     };
   },
   methods: {
     addExercise() {
-      const newId = this.allTimeExercises.length + 1;
-      const exercise = { id: newId, ...this.newExercise };
-      this.todayExercises.push(exercise);
-      this.weekExercises.push(exercise);
-      this.allTimeExercises.push(exercise);
+      if (this.editIndex !== null) {
+        this.updateExercise();
+      } else {
+        const newId = this.allTimeExercises.length + 1;
+        const exercise = { id: newId, ...this.newExercise };
+        this.todayExercises.push(exercise);
+        this.weekExercises.push(exercise);
+        this.allTimeExercises.push(exercise);
+        this.newExercise.name = '';
+        this.newExercise.duration = '';
+      }
+    },
+    editExercise(category, index) {
+      this.editCategory = category;
+      this.editIndex = index;
+      const exercise = this[`${category}Exercises`][index];
+      this.newExercise.name = exercise.name;
+      this.newExercise.duration = exercise.duration;
+    },
+    updateExercise() {
+      const exercise = { ...this.newExercise, id: this[`${this.editCategory}Exercises`][this.editIndex].id };
+      this[`${this.editCategory}Exercises`].splice(this.editIndex, 1, exercise);
       this.newExercise.name = '';
       this.newExercise.duration = '';
+      this.editIndex = null;
+      this.editCategory = '';
+    },
+    deleteExercise(category, index) {
+      this[`${category}Exercises`].splice(index, 1);
     }
   }
 };
@@ -121,6 +163,14 @@ li {
   background: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
 }
 
 form {
@@ -157,5 +207,9 @@ button {
 
 button:hover {
   background: #0056b3;
+}
+
+button + button {
+  margin-left: 10px;
 }
 </style>

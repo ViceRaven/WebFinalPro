@@ -8,8 +8,11 @@
       <div class="status-feed">
         <h2>Exercise Posts</h2>
         <div v-for="post in exercisePosts" :key="post.id" class="post">
-          <p>{{ post.content }}</p>
-          <small>Posted by: {{ post.user }}</small>
+          <img :src="post.picture" alt="User Picture" class="user-picture" />
+          <div class="post-content">
+            <p>{{ post.content }}</p>
+            <small>Posted by: {{ post.user }}</small>
+          </div>
         </div>
       </div>
     </div>
@@ -22,8 +25,10 @@
       return {
         newStatus: '',
         exercisePosts: [
-          { id: 1, content: 'Just finished a 5k run!', user: 'User1' },
-          { id: 2, content: 'Did 50 push-ups today!', user: 'User2' },
+          { id: 1, content: 'Just finished a 5k run!', user: 'User1', picture: 'https://via.placeholder.com/30' },
+          { id: 2, content: 'Did 50 push-ups today!', user: 'User2', picture: 'https://via.placeholder.com/30' },
+          { id: 3, content: 'Completed a 10k run!', user: 'Max', picture: 'https://upload.wikimedia.org/wikipedia/en/2/20/MaxCaulfield.png' },
+          { id: 4, content: 'Yoga session for 1 hour!', user: 'Chloe', picture: 'https://upload.wikimedia.org/wikipedia/en/9/95/ChloePriceLifeIsStrange.png' },
           // Add more sample posts here
         ],
       };
@@ -35,6 +40,7 @@
             id: this.exercisePosts.length + 1,
             content: this.newStatus,
             user: 'You',
+            picture: 'https://via.placeholder.com/30', // Placeholder picture for the current user
           });
           this.newStatus = '';
         }
@@ -113,6 +119,19 @@
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-picture {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+  }
+  
+  .post-content {
+    flex: 1;
   }
   
   .post p {
