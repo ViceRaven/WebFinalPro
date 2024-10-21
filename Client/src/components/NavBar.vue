@@ -19,8 +19,8 @@
     </div>
     <div v-if="loggedInUser" class="user-info">
       <img :src="loggedInUser.picture" alt="User Picture" class="user-picture" />
-      <router-link to="/max">Max</router-link>
-      <router-link to="/max/manage-profile" class="manage-profile-button">Manage Profile</router-link>
+      <router-link :to="`/${loggedInUser.name.toLowerCase()}`">{{ loggedInUser.name }}</router-link>
+      <router-link :to="`/${loggedInUser.name.toLowerCase()}/manage-profile`" class="manage-profile-button">Manage Profile</router-link>
       <button @click="logoutUser" class="logout-button">Sign Out</button>
     </div>
     <div v-if="isAdmin" class="admin-link">
