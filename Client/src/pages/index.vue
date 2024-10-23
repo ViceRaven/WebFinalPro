@@ -107,7 +107,7 @@ export default {
 
 <style scoped>
 .container {
-  width: 100%;
+  /* width: 100%; */
   min-height: 100vh; /* Full viewport height */
   display: flex;
   flex-direction: column;

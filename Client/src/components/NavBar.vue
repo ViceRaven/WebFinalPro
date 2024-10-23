@@ -10,9 +10,9 @@
         <li class="dropdown">
           <span>Users</span>
           <ul class="dropdown-content">
-            <li @click="loginUser('Rachel', 'https://i.redd.it/dy6aw0azuicc1.jpeg', true)"><router-link to="/rachel">Rachel</router-link></li>
-            <li @click="loginUser('Max', 'https://upload.wikimedia.org/wikipedia/en/2/20/MaxCaulfield.png', false)"><router-link to="/max">Max</router-link></li>
-            <li @click="loginUser('Chloe', 'https://upload.wikimedia.org/wikipedia/en/9/95/ChloePriceLifeIsStrange.png', false)"><router-link to="/chloe">Chloe</router-link></li>
+            <router-link to="/rachel"><li @click="loginUser('Rachel', 'https://i.redd.it/dy6aw0azuicc1.jpeg', true)">Rachel</li></router-link>
+            <router-link to="/max"><li @click="loginUser('Max', 'https://upload.wikimedia.org/wikipedia/en/2/20/MaxCaulfield.png', false)">Max</li></router-link>
+            <router-link to="/chloe"><li @click="loginUser('Chloe', 'https://upload.wikimedia.org/wikipedia/en/9/95/ChloePriceLifeIsStrange.png', false)">Chloe</li></router-link>
           </ul>
         </li>
       </ul>
@@ -23,7 +23,7 @@
       <router-link :to="`/${loggedInUser.name.toLowerCase()}/manage-profile`" class="manage-profile-button">Manage Profile</router-link>
       <button @click="logoutUser" class="logout-button">Sign Out</button>
     </div>
-    <div v-if="isAdmin" class="admin-link">
+    <div v-if="loggedInUser && loggedInUser.name === 'Rachel'" class="admin-link">
       <router-link to="/admin">Admin</router-link>
     </div>
   </nav>
@@ -106,10 +106,6 @@ function logoutUser() {
   padding: 12px 16px;
   text-decoration: none;
   display: block;
-}
-
-.dropdown-content li a {
-  color: white;
 }
 
 .dropdown-content li:hover {
