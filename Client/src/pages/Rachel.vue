@@ -5,7 +5,7 @@
       <h2>Today</h2>
       <ul>
         <li v-for="(exercise, index) in todayExercises" :key="exercise.id">
-          {{ exercise.name }} - {{ exercise.duration }} mins
+          {{ exercise.name }} - {{ exercise.duration }} {{ exercise.unit }}<span v-if="exercise.name === 'Weightlifting'">, {{ exercise.weight }} lbs</span>
           <div class="buttons">
             <button @click="editExercise('today', index)">Edit</button>
             <button @click="deleteExercise('today', index)">Delete</button>
@@ -17,7 +17,7 @@
       <h2>This Week</h2>
       <ul>
         <li v-for="(exercise, index) in weekExercises" :key="exercise.id">
-          {{ exercise.name }} - {{ exercise.duration }} mins
+          {{ exercise.name }} - {{ exercise.duration }} {{ exercise.unit }}<span v-if="exercise.name === 'Weightlifting'">, {{ exercise.weight }} lbs</span>
           <div class="buttons">
             <button @click="editExercise('week', index)">Edit</button>
             <button @click="deleteExercise('week', index)">Delete</button>
@@ -29,7 +29,7 @@
       <h2>All Time</h2>
       <ul>
         <li v-for="(exercise, index) in allTimeExercises" :key="exercise.id">
-          {{ exercise.name }} - {{ exercise.duration }} mins
+          {{ exercise.name }} - {{ exercise.duration }} {{ exercise.unit }}<span v-if="exercise.name === 'Weightlifting'">, {{ exercise.weight }} lbs</span>
           <div class="buttons">
             <button @click="editExercise('allTime', index)">Edit</button>
             <button @click="deleteExercise('allTime', index)">Delete</button>
@@ -46,8 +46,12 @@
           <input type="text" v-model="newExercise.name" required>
         </div>
         <div class="field">
-          <label for="duration">Duration (mins):</label>
+          <label for="duration">Duration:</label>
           <input type="number" v-model="newExercise.duration" required>
+        </div>
+        <div class="field" v-if="newExercise.name === 'Weightlifting'">
+          <label for="weight">Weight (lbs):</label>
+          <input type="number" v-model="newExercise.weight" required>
         </div>
         <button type="submit">{{ editIndex !== null ? 'Update Exercise' : 'Add Exercise' }}</button>
       </form>
@@ -60,40 +64,58 @@ export default {
   name: 'RachelExerciseData',
   data() {
     return {
-      todayExercises: [
-        { id: 1, name: 'Running', duration: 5 },
-        { id: 2, name: 'Yoga', duration: 30 }
-      ],
-      weekExercises: [
-        { id: 1, name: 'Running', duration: 25 },
-        { id: 2, name: 'Yoga', duration: 180 },
-        { id: 3, name: 'Swimming', duration: 120 }
-      ],
-      allTimeExercises: [
-        { id: 1, name: 'Running', duration: 500 },
-        { id: 2, name: 'Yoga', duration: 3000 },
-        { id: 3, name: 'Swimming', duration: 1200 }
-      ],
+      todayExercises: this.generateRandomExercises(2),
+      weekExercises: this.generateRandomExercises(5),
+      allTimeExercises: this.generateRandomExercises(10),
       newExercise: {
         name: '',
-        duration: ''
+        duration: '',
+        unit: '',
+        weight: null
       },
       editIndex: null,
       editCategory: ''
     };
   },
   methods: {
+    generateRandomExercises(count) {
+      const exercises = ['Running', 'Yoga', 'Swimming', 'Cycling', 'Hiking', 'Weightlifting'];
+      const units = {
+        'Running': 'miles',
+        'Swimming': 'laps',
+        'Cycling': 'miles',
+        'Yoga': 'mins',
+        'Hiking': 'mins',
+        'Weightlifting': 'mins'
+      };
+      const randomExercises = [];
+      for (let i = 0; i < count; i++) {
+        const name = exercises[Math.floor(Math.random() * exercises.length)];
+        const duration = Math.floor(Math.random() * 100) + 1;
+        const weight = name === 'Weightlifting' ? Math.floor(Math.random() * 200) + 1 : null;
+        randomExercises.push({
+          id: i + 1,
+          name,
+          duration,
+          unit: units[name],
+          weight
+        });
+      }
+      return randomExercises;
+    },
     addExercise() {
       if (this.editIndex !== null) {
         this.updateExercise();
       } else {
         const newId = this.allTimeExercises.length + 1;
-        const exercise = { id: newId, ...this.newExercise };
+        const exercise = { id: newId, ...this.newExercise, unit: this.getUnit(this.newExercise.name) };
         this.todayExercises.push(exercise);
         this.weekExercises.push(exercise);
         this.allTimeExercises.push(exercise);
         this.newExercise.name = '';
         this.newExercise.duration = '';
+        this.newExercise.unit = '';
+        this.newExercise.weight = null;
       }
     },
     editExercise(category, index) {
@@ -102,17 +124,30 @@ export default {
       const exercise = this[`${category}Exercises`][index];
       this.newExercise.name = exercise.name;
       this.newExercise.duration = exercise.duration;
+      this.newExercise.unit = exercise.unit;
+      this.newExercise.weight = exercise.weight;
     },
     updateExercise() {
-      const exercise = { ...this.newExercise, id: this[`${this.editCategory}Exercises`][this.editIndex].id };
+      const exercise = { ...this.newExercise, id: this[`${this.editCategory}Exercises`][this.editIndex].id, unit: this.getUnit(this.newExercise.name) };
       this[`${this.editCategory}Exercises`].splice(this.editIndex, 1, exercise);
       this.newExercise.name = '';
       this.newExercise.duration = '';
+      this.newExercise.unit = '';
+      this.newExercise.weight = null;
       this.editIndex = null;
       this.editCategory = '';
     },
     deleteExercise(category, index) {
       this[`${category}Exercises`].splice(index, 1);
+    },
+    getUnit(exerciseName) {
+      if (exerciseName.toLowerCase() === 'running' || exerciseName.toLowerCase() === 'cycling') {
+        return 'miles';
+      } else if (exerciseName.toLowerCase() === 'swimming') {
+        return 'laps';
+      } else {
+        return 'mins';
+      }
     }
   }
 };

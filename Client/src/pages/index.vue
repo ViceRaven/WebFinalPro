@@ -21,7 +21,7 @@
     </div>
 
     <div class="data-section">
-      <h2>All-Time Summary</h2>
+      <h2>Total Among Users </h2>
       <div class="data-container">
         <p><strong>Miles Ran:</strong> {{ allTimeData.milesRan }} miles</p>
         <p><strong>Total Time:</strong> {{ allTimeData.time }} minutes</p>
