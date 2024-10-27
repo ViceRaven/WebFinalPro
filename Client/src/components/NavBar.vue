@@ -4,15 +4,15 @@
       <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="30" height="30" />
       <ul class="nav-links">
         <li><router-link to="/">Home</router-link></li>
-        <li><router-link to="/about">About</router-link></li>
-        <li><router-link to="/contact">Contact</router-link></li>
-        <li><router-link to="/social">Social</router-link></li> <!-- Added Social link -->
+        <li><router-link to="/About">About</router-link></li>
+        <li><router-link to="/Contact/Index">Contact</router-link></li>
+        <li v-if="loggedInUser"><router-link to="/Social">Social</router-link></li> <!-- Conditionally display Social link -->
         <li class="dropdown">
           <span>Users</span>
           <ul class="dropdown-content">
-            <router-link to="/rachel"><li @click="loginUser('Rachel', 'https://i.redd.it/dy6aw0azuicc1.jpeg', true)">Rachel</li></router-link>
-            <router-link to="/max"><li @click="loginUser('Max', 'https://upload.wikimedia.org/wikipedia/en/2/20/MaxCaulfield.png', false)">Max</li></router-link>
-            <router-link to="/chloe"><li @click="loginUser('Chloe', 'https://upload.wikimedia.org/wikipedia/en/9/95/ChloePriceLifeIsStrange.png', false)">Chloe</li></router-link>
+            <router-link to="/Rachel"><li @click="handleUserClick('Rachel', 'https://i.redd.it/dy6aw0azuicc1.jpeg', true, '/Rachel')">Rachel</li></router-link>
+            <router-link to="/Max"><li @click="handleUserClick('Max', 'https://upload.wikimedia.org/wikipedia/en/2/20/MaxCaulfield.png', false, '/Max')">Max</li></router-link>
+            <router-link to="/Chloe"><li @click="handleUserClick('Chloe', 'https://upload.wikimedia.org/wikipedia/en/9/95/ChloePriceLifeIsStrange.png', false, '/Chloe')">Chloe</li></router-link>
           </ul>
         </li>
       </ul>
@@ -20,11 +20,10 @@
     <div v-if="loggedInUser" class="user-info">
       <img :src="loggedInUser.picture" alt="User Picture" class="user-picture" />
       <router-link :to="`/${loggedInUser.name.toLowerCase()}`">{{ loggedInUser.name }}</router-link>
-      <router-link :to="`/${loggedInUser.name.toLowerCase()}/manage-profile`" class="manage-profile-button">Manage Profile</router-link>
       <button @click="logoutUser" class="logout-button">Sign Out</button>
     </div>
-    <div v-if="loggedInUser && loggedInUser.name === 'Rachel'" class="admin-link">
-      <router-link to="/admin">Admin</router-link>
+    <div v-if="loggedInUser && loggedInUser.adminAccess" class="admin-link">
+      <router-link to="/Admin">Admin</router-link>
     </div>
   </nav>
 </template>
@@ -33,19 +32,21 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-const loggedInUser = ref<{ name: string, picture: string } | null>(null);
-const isAdmin = ref(false);
+const loggedInUser = ref<{ name: string, picture: string, adminAccess: boolean } | null>(null);
 const router = useRouter();
 
-function loginUser(name: string, picture: string, admin: boolean) {
-  loggedInUser.value = { name, picture };
-  isAdmin.value = admin;
+function loginUser(name: string, picture: string, adminAccess: boolean) {
+  loggedInUser.value = { name, picture, adminAccess };
 }
 
 function logoutUser() {
   loggedInUser.value = null;
-  isAdmin.value = false;
   router.push('/');
+}
+
+function handleUserClick(name: string, picture: string, adminAccess: boolean, route: string) {
+  loginUser(name, picture, adminAccess);
+  router.push(route);
 }
 </script>
 
@@ -127,6 +128,7 @@ function logoutUser() {
   height: 30px;
   border-radius: 50%;
   margin-right: 10px;
+  cursor: pointer;
 }
 
 .user-info a {
@@ -136,20 +138,6 @@ function logoutUser() {
 
 .user-info a:hover {
   text-decoration: underline;
-}
-
-.manage-profile-button {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  margin-left: 10px;
-  text-decoration: none;
-}
-
-.manage-profile-button:hover {
-  background-color: #45a049;
 }
 
 .logout-button {

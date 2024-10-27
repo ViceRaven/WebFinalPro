@@ -5,7 +5,7 @@
       <h2>Today</h2>
       <ul>
         <li v-for="(exercise, index) in todayExercises" :key="exercise.id">
-          {{ exercise.name }} - {{ exercise.duration }} mins
+          {{ exercise.name }} - {{ exercise.duration }} {{ exercise.unit }}
           <div class="buttons">
             <button @click="editExercise('today', index)">Edit</button>
             <button @click="deleteExercise('today', index)">Delete</button>
@@ -17,7 +17,7 @@
       <h2>This Week</h2>
       <ul>
         <li v-for="(exercise, index) in weekExercises" :key="exercise.id">
-          {{ exercise.name }} - {{ exercise.duration }} mins
+          {{ exercise.name }} - {{ exercise.duration }} {{ exercise.unit }}
           <div class="buttons">
             <button @click="editExercise('week', index)">Edit</button>
             <button @click="deleteExercise('week', index)">Delete</button>
@@ -29,7 +29,7 @@
       <h2>All Time</h2>
       <ul>
         <li v-for="(exercise, index) in allTimeExercises" :key="exercise.id">
-          {{ exercise.name }} - {{ exercise.duration }} mins
+          {{ exercise.name }} - {{ exercise.duration }} {{ exercise.unit }}
           <div class="buttons">
             <button @click="editExercise('allTime', index)">Edit</button>
             <button @click="deleteExercise('allTime', index)">Delete</button>
@@ -46,7 +46,7 @@
           <input type="text" v-model="newExercise.name" required>
         </div>
         <div class="field">
-          <label for="duration">Duration (mins):</label>
+          <label for="duration">Duration:</label>
           <input type="number" v-model="newExercise.duration" required>
         </div>
         <button type="submit">{{ editIndex !== null ? 'Update Exercise' : 'Add Exercise' }}</button>
@@ -61,26 +61,27 @@ export default {
   data() {
     return {
       todayExercises: [
-        { id: 1, name: 'Running', duration: 30 },
-        { id: 2, name: 'Cycling', duration: 45 }
+        { id: 1, name: 'Running', duration: 5, unit: 'miles' },
+        { id: 2, name: 'Cycling', duration: 45, unit: 'miles' }
       ],
       weekExercises: [
-        { id: 1, name: 'Running', duration: 30 },
-        { id: 2, name: 'Cycling', duration: 45 },
-        { id: 3, name: 'Swimming', duration: 60 },
-        { id: 4, name: 'Yoga', duration: 40 }
+        { id: 1, name: 'Running', duration: 25, unit: 'miles' },
+        { id: 2, name: 'Cycling', duration: 45, unit: 'miles' },
+        { id: 3, name: 'Swimming', duration: 60, unit: 'laps' },
+        { id: 4, name: 'Yoga', duration: 40, unit: 'mins' }
       ],
       allTimeExercises: [
-        { id: 1, name: 'Running', duration: 30 },
-        { id: 2, name: 'Cycling', duration: 45 },
-        { id: 3, name: 'Swimming', duration: 60 },
-        { id: 4, name: 'Yoga', duration: 40 },
-        { id: 5, name: 'Hiking', duration: 120 },
-        { id: 6, name: 'Weightlifting', duration: 50 }
+        { id: 1, name: 'Running', duration: 500, unit: 'miles' },
+        { id: 2, name: 'Cycling', duration: 45, unit: 'miles' },
+        { id: 3, name: 'Swimming', duration: 60, unit: 'laps' },
+        { id: 4, name: 'Yoga', duration: 40, unit: 'mins' },
+        { id: 5, name: 'Hiking', duration: 120, unit: 'mins' },
+        { id: 6, name: 'Weightlifting', duration: 50, unit: 'mins' }
       ],
       newExercise: {
         name: '',
-        duration: ''
+        duration: '',
+        unit: ''
       },
       editIndex: null,
       editCategory: ''
@@ -92,12 +93,13 @@ export default {
         this.updateExercise();
       } else {
         const newId = this.allTimeExercises.length + 1;
-        const exercise = { id: newId, ...this.newExercise };
+        const exercise = { id: newId, ...this.newExercise, unit: this.getUnit(this.newExercise.name) };
         this.todayExercises.push(exercise);
         this.weekExercises.push(exercise);
         this.allTimeExercises.push(exercise);
         this.newExercise.name = '';
         this.newExercise.duration = '';
+        this.newExercise.unit = '';
       }
     },
     editExercise(category, index) {
@@ -106,17 +108,28 @@ export default {
       const exercise = this[`${category}Exercises`][index];
       this.newExercise.name = exercise.name;
       this.newExercise.duration = exercise.duration;
+      this.newExercise.unit = exercise.unit;
     },
     updateExercise() {
-      const exercise = { ...this.newExercise, id: this[`${this.editCategory}Exercises`][this.editIndex].id };
+      const exercise = { ...this.newExercise, id: this[`${this.editCategory}Exercises`][this.editIndex].id, unit: this.getUnit(this.newExercise.name) };
       this[`${this.editCategory}Exercises`].splice(this.editIndex, 1, exercise);
       this.newExercise.name = '';
       this.newExercise.duration = '';
+      this.newExercise.unit = '';
       this.editIndex = null;
       this.editCategory = '';
     },
     deleteExercise(category, index) {
       this[`${category}Exercises`].splice(index, 1);
+    },
+    getUnit(exerciseName) {
+      if (exerciseName.toLowerCase() === 'running' || exerciseName.toLowerCase() === 'cycling') {
+        return 'miles';
+      } else if (exerciseName.toLowerCase() === 'swimming') {
+        return 'laps';
+      } else {
+        return 'mins';
+      }
     }
   }
 };
