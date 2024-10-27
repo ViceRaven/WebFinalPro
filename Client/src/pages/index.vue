@@ -21,11 +21,7 @@
     </div>
 
     <div class="data-section">
-<<<<<<< HEAD
-      <h2>All-Time Summary</h2>
-=======
       <h2>Total Among Users </h2>
->>>>>>> real-project-work-branch
       <div class="data-container">
         <p><strong>Miles Ran:</strong> {{ allTimeData.milesRan }} miles</p>
         <p><strong>Total Time:</strong> {{ allTimeData.time }} minutes</p>
@@ -111,11 +107,7 @@ export default {
 
 <style scoped>
 .container {
-<<<<<<< HEAD
-  /* width: 100%; */
-=======
   width: 100%;
->>>>>>> real-project-work-branch
   min-height: 100vh; /* Full viewport height */
   display: flex;
   flex-direction: column;
