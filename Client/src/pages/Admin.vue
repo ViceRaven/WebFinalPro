@@ -20,6 +20,7 @@
   
   <script>
   export default {
+    name: 'AdminPage',
     data() {
       return {
         users: [
