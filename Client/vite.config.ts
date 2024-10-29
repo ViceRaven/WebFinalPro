@@ -21,5 +21,5 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  base: './'
+  base: 'https://github.com/ViceRaven/WebFinalPro.git'
 })
