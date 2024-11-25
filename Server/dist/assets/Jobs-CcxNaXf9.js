@@ -1,1 +1,0 @@
-import{_ as a,c as o,a as e,o as t}from"./index-DvOTlsaf.js";const l={};function n(r,s){return t(),o("div",null,s[0]||(s[0]=[e("h1",{class:"title"},"The Jobs Page",-1),e("h2",{class:"subtitle"},"This is an example of a jobs page",-1),e("p",null,"Here is a list of jobs",-1)]))}const i=a(l,[["render",n]]);export{i as default};
