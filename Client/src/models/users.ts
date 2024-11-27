@@ -20,13 +20,7 @@ export function update(user: User) {
 export function remove(id: number) {
   return api<DataEnvelope<User>>(`users/${id}`, undefined, 'DELETE')
 }
-export interface ActivityLog {
-  date: string
-  activity: string
-  duration: number
-  calories: number
-  distance: number
-}
+
 
 export interface User {
   id: number
@@ -35,6 +29,5 @@ export interface User {
   lastName: string
   profilePic: string
   adminAccess: boolean
-  activityLogs: ActivityLog[]
 }
 
