@@ -16,7 +16,7 @@ MyHeader: MyValue
 }
 
 ###
-GET http://localhost:3003/api/v1/exercises/
+GET http://localhost:3003/api/v1/exercises/6
 
 ###
 GET http://localhost:3003/api/vi/
@@ -28,13 +28,12 @@ GET http://localhost:3001/users/2
 DELETE http://localhost:3003/api/v1/exercises/1
 
 ###
-POST http://localhost:3000/
+PATCH http://localhost:3003/api/v1/exercises
 Content-Type: application/json
 
 {
-    "firstName": "Moshe",
-    "lastName": "Goldberg",
-    "age": 30,
-    "email": "goldberg@newpaltz.edu",
-    "password": "123456"
+    "id": 7,
+    "title": "jumping-jacks",
+    "description": "A calisthenics exercise that consists of standing in place and jumping while moving arms and legs outwards.",
+    "difficulty": "Easy"
 }
