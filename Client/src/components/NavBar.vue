@@ -6,6 +6,7 @@
         <li><router-link to="/">Home</router-link></li>
         <li><router-link to="/About">About</router-link></li>
         <li><router-link to="/Contact/Index">Contact</router-link></li>
+        <li><router-link to="/Exercises">Exercise Database</router-link></li> <!-- Link to Exercise Database page -->
         <li v-if="loggedInUser"><router-link to="/Social">Social</router-link></li> <!-- Conditionally display Social link -->
         <li class="dropdown">
           <span>Users</span>

@@ -1,0 +1,33 @@
+Ok so I'm trying to give the admin the ability to add and delete users
+pretty much buy issuing a http request in the scratch.http file.
+The issue is that it doesn't work. I've been testing it out with the 30 local host one
+but it doesnt work.
+
+To Fix
+-The admin.vue page cannot add or delete users
+-There may be files that need the port number updated
+-Revamp project to use logging in instead of user drop down (optional)
+
+
+11/24/24
+
+I think i'm going to focus on users and roles and permissions for my models and ctronllers since i dont have any products in my web app
+
+
+
+Need to add the users data to the users.json thing 
+
+need to have exercises access the exercises.json page
+
+supposedly the data gets accessed through the models files and the controller is supposed to use the models files to access the data and do function with it
+
+
+
+OK so figured out why the scrtahc http wasnt working. I had the wrong url. 
+Still turning everything into exercise instead of user
+My plan is to have an exercise databse that the user can search through.
+Basically my model view controller will deal with exercises and not user 
+
+Need to get the query to the supabase table to work 
+
+Ok so the get request IS working its returning the index.html as specificed in the dist folder 
