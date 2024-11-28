@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import supabase from '../supabase';
+import supabase from '/Users/ziares/WebProCW/WebFinalPro/Server/model/supabase.js';
 
 export default {
   data() {
