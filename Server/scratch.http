@@ -25,20 +25,19 @@ GET http://localhost:3003/api/v1/exercises
 GET http://localhost:3001/users/2
 
 ###
-DELETE http://localhost:3003/api/v1/exercises/1
+DELETE http://localhost:3003/api/v1/exercises/8
 
 ###
-POST http://localhost:3003/api/v1/exercises/6
+###
+POST http://localhost:3003/api/v1/exercises
 Content-Type: application/json
 
-[
-    {
-      "id": 1,
-      "title": "Jumping-Jacks",
-      "description": "An exercise where you jump up and down and flail your arms like a psychopath.",
-      "difficulty": "Easy"
-    }
-  ]
+{
+  "id": 8,
+  "title": "Dips",
+  "description": "An exercise where you lower your body and raise it back up.",
+  "difficulty": "Hard"
+}
 
 ###
 PATCH http://localhost:3003/api/v1/exercises/7
@@ -47,7 +46,7 @@ Content-Type: application/json
 [
     {
       "id": 7,
-      "title": "Jumping-J1acks",
+      "title": "Jumping-Jacks",
       "description": "An exercise where you jump up and down and flail your arms like a psychopath.",
       "difficulty": "Easy"
     }
