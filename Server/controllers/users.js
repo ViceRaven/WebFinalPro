@@ -1,6 +1,6 @@
 /*  B"H
  */
-const model = require("../model/users");
+const model = require("../model/exercise");
 const express = require("express");
 const app = express.Router();
 
