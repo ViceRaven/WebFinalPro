@@ -16,10 +16,10 @@ MyHeader: MyValue
 }
 
 ###
-GET http://localhost:3003/api/v1/exercises/6
+GET http://localhost:3003/api/v1/exercises/1
 
 ###
-GET http://localhost:3003/api/vi/
+GET http://localhost:3003/api/v1/exercises
 
 ###
 GET http://localhost:3001/users/2
@@ -28,12 +28,27 @@ GET http://localhost:3001/users/2
 DELETE http://localhost:3003/api/v1/exercises/1
 
 ###
-PATCH http://localhost:3003/api/v1/exercises
+POST http://localhost:3003/api/v1/exercises/6
 Content-Type: application/json
 
-{
-    "id": 7,
-    "title": "jumping-jacks",
-    "description": "A calisthenics exercise that consists of standing in place and jumping while moving arms and legs outwards.",
-    "difficulty": "Easy"
-}
+[
+    {
+      "id": 1,
+      "title": "Jumping-Jacks",
+      "description": "An exercise where you jump up and down and flail your arms like a psychopath.",
+      "difficulty": "Easy"
+    }
+  ]
+
+###
+PATCH http://localhost:3003/api/v1/exercises/7
+Content-Type: application/json
+
+[
+    {
+      "id": 7,
+      "title": "Jumping-J1acks",
+      "description": "An exercise where you jump up and down and flail your arms like a psychopath.",
+      "difficulty": "Easy"
+    }
+  ]

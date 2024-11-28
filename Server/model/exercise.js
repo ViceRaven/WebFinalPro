@@ -3,7 +3,6 @@ const data = require("../data/exercises.json");
 const { getConnection } = require("./supabase");
 const conn = getConnection();
 
-
 /**
  * @template T
  * @typedef {import("../../Client/src/models/dataEnvelope").DataEnvelope} DataEnvelope
@@ -23,10 +22,10 @@ async function getAll() {
         .from("exercises")
         .select("*", { count: "estimated" }); //* means get all the data in that field
     return {
-    isSuccess: !error,
-    message: error?.message,
-    data: data,
-    total: count,
+        isSuccess: !error,
+        message: error?.message,
+        data: data,
+        total: count,
     };
 }
 
@@ -38,38 +37,56 @@ async function getAll() {
 async function get(id) {
     const { data, error } = await conn.from("exercises").select("*").eq("id", id);
     return {
-    isSuccess: !error,
-    message: error?.message,
-    data: data,
+        isSuccess: !error,
+        message: error?.message,
+        data: data,
     };
 }
 
 /**
  * Add a new exercise
- * @param {Exercise} exercises
+ * @param {Exercise} exercise
  * @returns {Promise<DataEnvelope<Exercise>>}
  */
-async function add(exercises) {
-    exercises.id = data.exercises.reduce((prev, x) => (x.id > prev ? x.id : prev), 0) + 1;
-    data.items.push(exercises);
+async function add(exercise) {
+    const { data, error } = await conn
+        .from('exercises')
+        .insert([exercise]);
+
+    if (error) {
+        throw error;
+    }
+
     return {
         isSuccess: true,
-        data: exercises,
+        data: data[0],
     };
 }
 
 /**
  * Update an exercise
  * @param {number} id
- * @param {Exercise} exercises
+ * @param {Exercise} exercise
  * @returns {Promise<DataEnvelope<Exercise>>}
  */
-async function update(id, exercises) {
-    const exerciseToUpdate = await get(id);
-    Object.assign(exerciseToUpdate.data, exercises);
+async function update(id, exercise) {
+    const { data, error } = await conn
+        .from('exercises')
+        .update(exercise)
+        .eq('id', id)
+        .select(); // Ensure the updated data is returned
+
+    if (error) {
+        throw error;
+    }
+
+    if (!data || data.length === 0) {
+        throw new Error('Update failed or no data returned');
+    }
+
     return {
         isSuccess: true,
-        data: exerciseToUpdate.data,
+        data: data[0],
     };
 }
 
@@ -79,13 +96,21 @@ async function update(id, exercises) {
  * @returns {Promise<DataEnvelope<number>>}
  */
 async function remove(id) {
-    const itemIndex = data.exercises.findIndex((exercises) => exercises.id == id);
-    if (itemIndex === -1)
-        throw { isSuccess: false, message: "Exercise not found", data: id };
-    data.items.splice(itemIndex, 1);
-    return { isSuccess: true, message: "Exercise deleted", data: id };
-}
+    const { data, error } = await conn
+        .from('exercises')
+        .delete()
+        .eq('id', id);
 
+    if (error) {
+        throw error;
+    }
+
+    return {
+        isSuccess: true,
+        message: "Exercise deleted",
+        data: id,
+    };
+}
 
 module.exports = {
     getAll,

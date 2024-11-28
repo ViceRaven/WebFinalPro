@@ -31,3 +31,6 @@ Basically my model view controller will deal with exercises and not user
 Need to get the query to the supabase table to work 
 
 Ok so the get request IS working its returning the index.html as specificed in the dist folder 
+
+
+Ok so i fixed the delete thing now working in scrtahc and now it delete things from supabase like how it should
