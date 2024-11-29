@@ -34,3 +34,5 @@ Ok so the get request IS working its returning the index.html as specificed in t
 
 
 Ok so i fixed the delete thing now working in scrtahc and now it delete things from supabase like how it should
+
+What I need to figure out now is how to get the routerlink for the exercise database to work

@@ -1,62 +1,62 @@
 <template>
   <div>
-    <input v-model="searchQuery" placeholder="Search exercises..." />
-    <select v-model="sortKey">
-      <option value="title">Title</option>
-      <option value="difficulty">Difficulty</option>
-    </select>
+    <h1>Exercise List</h1>
+
+    <!-- Exercise List -->
     <ul>
-      <li v-for="exercise in filteredExercises" :key="exercise.id">
-        <h3>{{ exercise.title }}</h3>
-        <p>{{ exercise.description }}</p>
-        <p>Difficulty: {{ exercise.difficulty }}</p>
+      <li v-for="exercise in exercises" :key="exercise.id">
+        <div>
+          <h3>{{ exercise.title }}</h3>
+          <p>{{ exercise.description }}</p>
+          <p>Difficulty: {{ exercise.difficulty }}</p>
+        </div>
       </li>
     </ul>
   </div>
 </template>
 
-<script>
-import supabase from '/Users/ziares/WebProCW/WebFinalPro/Server/model/supabase.js';
+<script lang="ts">
+import { api } from "/Users/ziares/WebProCW/WebFinalPro/Client/src/models/myFetch";  // Adjust the import according to your folder structure
 
 export default {
   data() {
     return {
-      exercises: [],
-      searchQuery: '',
-      sortKey: 'title',
+      exercises: [] as { id: number; title: string; description: string; difficulty: string }[],  // Store exercises here
     };
   },
-  computed: {
-    filteredExercises() {
-      return this.exercises
-        .filter(exercise => 
-          exercise.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-          exercise.description.toLowerCase().includes(this.searchQuery.toLowerCase())
-        )
-        .sort((a, b) => {
-          if (this.sortKey === 'title') {
-            return a.title.localeCompare(b.title);
-          } else if (this.sortKey === 'difficulty') {
-            return a.difficulty.localeCompare(b.difficulty);
-          }
-          return 0;
-        });
-    },
+  mounted() {
+    this.fetchExercises();  // Fetch exercises when the component mounts
   },
-  async created() {
-    const { data, error } = await supabase
-      .from('exercises')
-      .select('*');
-
-    if (error) {
-      console.error('Error fetching exercises:', error);
-    } else {
-      this.exercises = data;
-    }
+  methods: {
+    async fetchExercises() {
+      try {
+        const response = await api<{ data: any[] }>("exercises");  // Fetch exercises from backend
+        this.exercises = response.data;  // Store fetched exercises in the component state
+      } catch (error) {
+        console.error("Error fetching exercises:", error);
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
-/* Add your styles here */
+/* Optional styling */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+h3 {
+  margin: 0;
+}
+
+p {
+  margin: 5px 0;
+}
 </style>
