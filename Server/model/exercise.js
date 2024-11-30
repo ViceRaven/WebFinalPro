@@ -20,7 +20,8 @@ const conn = getConnection();
 async function getAll() {
     const { data, error, count } = await conn
         .from("exercises")
-        .select("*", { count: "estimated" }); //* means get all the data in that field
+        .select("*", { count: "estimated" }) //* means get all the data in that field
+        .order('id', { ascending: true }); // Ensure the exercises are sorted by id in ascending order
     return {
         isSuccess: !error,
         message: error?.message,
