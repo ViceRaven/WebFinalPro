@@ -4,7 +4,8 @@
   "description": "Web Process",
   "scripts": {
     "start": "node Server/index.js",
-    "dev": "nodemon Server/index.js -- watch server"
+    "dev": "nodemon Server/index.js -- watch server",
+    "build": "vite build"
   },
   "dependencies": {
     "express": "^4.21.1",
