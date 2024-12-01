@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { api } from "/Users/ziares/WebProCW/WebFinalPro/Client/src/models/myFetch";  // Adjust the import according to your folder structure
+import { api } from "@/models/myFetch";  // Adjust the import according to your folder structure
 
 export default {
   data() {
