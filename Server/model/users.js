@@ -1,8 +1,9 @@
 /*  B"H
  */
-
-/** @type {{ items: User[] }} */
+/** @type {{ people: User[] }} */
 const data = require("../data/users.json");
+const { getConnection } = require("./supabase");
+const conn = getConnection();
 
 /**
  * @template T

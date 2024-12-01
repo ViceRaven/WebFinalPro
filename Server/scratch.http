@@ -22,9 +22,6 @@ GET http://localhost:3003/api/v1/exercises/1
 GET http://localhost:3003/api/v1/exercises
 
 ###
-GET http://localhost:3001/users/2
-
-###
 DELETE http://localhost:3003/api/v1/exercises/1
 
 ###
