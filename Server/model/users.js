@@ -1,7 +1,5 @@
-/*  B"H
- */
-/** @type {{ people: User[] }} */
-const data = require("../data/users.json");
+/** @type {{ exercises: Exercise[] }} */
+const data = require("../data/exercises.json");
 const { getConnection } = require("./supabase");
 const conn = getConnection();
 
@@ -20,11 +18,16 @@ const conn = getConnection();
  * @returns {Promise<DataListEnvelope<User>>}
  */
 async function getAll() {
-  return {
-    isSuccess: true,
-    data: data.items,
-    total: data.items.length,
-  };
+    const { data, error, count } = await conn
+        .from("users")
+        .select("*", { count: "estimated" }) //* means get all the data in that field
+        .order('id', { ascending: true }); // Ensure the users are sorted by id in ascending order
+    return {
+        isSuccess: !error,
+        message: error?.message,
+        data: data,
+        total: count,
+    };
 }
 
 /**
@@ -33,11 +36,12 @@ async function getAll() {
  * @returns {Promise<DataEnvelope<User>>}
  */
 async function get(id) {
-  const item = data.items.find((user) => user.id == id);
-  return {
-    isSuccess: !!item,
-    data: item,
-  };
+    const { data, error } = await conn.from("users").select("*").eq("id", id);
+    return {
+        isSuccess: !error,
+        message: error?.message,
+        data: data,
+    };
 }
 
 /**
@@ -46,27 +50,66 @@ async function get(id) {
  * @returns {Promise<DataEnvelope<User>>}
  */
 async function add(user) {
-  user.id = data.items.reduce((prev, x) => (x.id > prev ? x.id : prev), 0) + 1;
-  data.items.push(user);
-  return {
-    isSuccess: true,
-    data: user,
-  };
+    const { data, error } = await conn
+        .from('users')
+        .insert([user]);
+
+    if (error) {
+        throw error;
+    }
+
+    return {
+        isSuccess: true,
+        data: data[0],
+    };
 }
 
 /**
  * Update a user
  * @param {number} id
  * @param {User} user
- * @returns {Promise<DataEnvelope<User>>}
+ * @returns {Promise<DataEnvelope<Users>>}
  */
 async function update(id, user) {
-  const userToUpdate = get(id);
-  Object.assign(userToUpdate, user);
-  return {
-    isSuccess: true,
-    data: userToUpdate,
-  };
+    try {
+        // Check if the record exists
+        const { data: existingData, error: getError } = await conn
+            .from('users')
+            .select('*')
+            .eq('id', id)
+            .single();
+
+        if (getError) {
+            console.error('Error fetching user:', getError);
+            throw new Error('User not found');
+        }
+
+        // Perform the update
+        const { data, error } = await conn
+            .from('users')
+            .update(user)
+            .eq('id', id)
+            .select(); // Ensure the updated data is returned
+
+        if (error) {
+            console.error('Error updating user:', error);
+            throw error;
+        }
+
+        if (!data || data.length === 0) {
+            const errorMessage = 'Update failed or no data returned';
+            console.error(errorMessage);
+            throw new Error(errorMessage);
+        }
+
+        return {
+            isSuccess: true,
+            data: data[0],
+        };
+    } catch (err) {
+        console.error('Unexpected error:', err);
+        throw err;
+    }
 }
 
 /**
@@ -75,22 +118,26 @@ async function update(id, user) {
  * @returns {Promise<DataEnvelope<number>>}
  */
 async function remove(id) {
-  const itemIndex = data.items.findIndex((user) => user.id == id);
-  if (itemIndex === -1)
-    throw {
-      isSuccess: false,
-      message: "Item not found",
-      data: id,
-      status: 404,
+    const { data, error } = await conn
+        .from('users')
+        .delete()
+        .eq('id', id);
+
+    if (error) {
+        throw error;
+    }
+
+    return {
+        isSuccess: true,
+        message: "User deleted",
+        data: id,
     };
-  data.items.splice(itemIndex, 1);
-  return { isSuccess: true, message: "Item deleted", data: id };
 }
 
 module.exports = {
-  getAll,
-  get,
-  add,
-  update,
-  remove,
+    getAll,
+    get,
+    add,
+    update,
+    remove,
 };
