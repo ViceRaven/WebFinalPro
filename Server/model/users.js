@@ -1,5 +1,5 @@
 /** @type {{ exercises: Exercise[] }} */
-const data = require("../data/exercises.json");
+const data = require("../data/users.json");
 const { getConnection } = require("./supabase");
 const conn = getConnection();
 
@@ -50,6 +50,7 @@ async function get(id) {
  * @returns {Promise<DataEnvelope<User>>}
  */
 async function add(user) {
+  
     const { data, error } = await conn
         .from('users')
         .insert([user]);
@@ -62,6 +63,8 @@ async function add(user) {
         isSuccess: true,
         data: data[0],
     };
+
+    
 }
 
 /**

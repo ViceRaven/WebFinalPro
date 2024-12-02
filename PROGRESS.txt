@@ -39,3 +39,11 @@ What I need to figure out now is how to get the routerlink for the exercise data
 
 
 
+TO DO:
+Fix the patch errors when patching exercises and users
+-Users works but gives an error when posting for some reason
+exercises posting also doesnt work 
+
+
+So got the exercisedatabse to be able to add and deleted exercises and edit them and have it be reflected oin supa based
+The issue now is that the newly created exercise starts from the last id +1 idk if thats gonna mess some stuff up.

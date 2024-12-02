@@ -30,24 +30,21 @@ POST http://localhost:3003/api/v1/users
 Content-Type: application/json
 
 {
-  "id": 1,
-  "email":
-  "firstname"
-  "lastname"
-  "profilepic"
-  adminaccess
-  "title": "Jump-Rope",
-  "description": "A core exercise where you jump over a rope at a steady pace.",
-  "difficulty": "Easy"
+  "id": 15,
+  "email":"sdmmops@example.com",
+  "firstname": "ammdy",
+  "lastname":"Pdps",
+  "profilepic":"htdps://upload.wikimedia.org/wikipedia/en/2/2e/DavidMadsen.png",
+  "adminaccess":"false"
 }
 
 ###
-PATCH http://localhost:3003/api/v1/exercises/7
+POST http://localhost:3003/api/v1/exercises
 Content-Type: application/json
 
 [
     {
-      "id": 7,
+      "id": 2,
       "title": "Jumping-Jacks",
       "description": "An exercise where you jump up and down and flail your arms like a psychopath.",
       "difficulty": "Easy"

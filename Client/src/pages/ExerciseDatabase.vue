@@ -18,6 +18,19 @@
       </select>
     </div>
 
+    <!-- Add Exercise Form -->
+    <div class="add-exercise">
+      <h2>Add Exercise</h2>
+      <input v-model="newExercise.title" placeholder="Title" />
+      <input v-model="newExercise.description" placeholder="Description" />
+      <select v-model="newExercise.difficulty">
+        <option value="Easy">Easy</option>
+        <option value="Medium">Medium</option>
+        <option value="Hard">Hard</option>
+      </select>
+      <button @click="addExercise">Add Exercise</button>
+    </div>
+
     <!-- Exercise List -->
     <ul class="exercise-items">
       <li v-for="exercise in filteredExercises" :key="exercise.id" class="exercise-item">
@@ -25,21 +38,41 @@
           <h3 class="exercise-title">{{ exercise.title }}</h3>
           <p class="exercise-description">{{ exercise.description }}</p>
           <p class="exercise-difficulty">Difficulty: <strong>{{ exercise.difficulty }}</strong></p>
+          <button @click="deleteExercise(exercise.id)">Delete</button>
+          <button @click="editExercise(exercise.id)">Edit</button>
         </div>
       </li>
     </ul>
+
+    <!-- Edit Exercise Form -->
+    <div v-if="editingExercise" class="edit-exercise">
+      <h2>Edit Exercise</h2>
+      <input v-model="editingExercise.title" placeholder="Title" />
+      <input v-model="editingExercise.description" placeholder="Description" />
+      <select v-model="editingExercise.difficulty">
+        <option value="Easy">Easy</option>
+        <option value="Medium">Medium</option>
+        <option value="Hard">Hard</option>
+      </select>
+      <button @click="updateExercise">Update Exercise</button>
+      <button @click="cancelEdit">Cancel</button>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { api } from "@/models/myFetch";  // Adjust the import according to your folder structure
+import { defineComponent } from 'vue';
+import { getAll, create, remove, getById, update } from '@/models/exercise';  // Adjust the import according to your folder structure
+import type { Exercise } from '@/models/exercise';  // Import the Exercise type
 
-export default {
+export default defineComponent({
   data() {
     return {
-      exercises: [] as { id: number; title: string; description: string; difficulty: string }[],  // Store exercises here
+      exercises: [] as Exercise[],  // Store exercises here
       searchQuery: '',  // Bind to search input
       selectedDifficulty: '',  // Bind to difficulty filter
+      newExercise: { title: '', description: '', difficulty: 'Easy' },  // New exercise data
+      editingExercise: null as Exercise | null  // Exercise being edited
     };
   },
   mounted() {
@@ -60,15 +93,61 @@ export default {
   methods: {
     async fetchExercises() {
       try {
-        const response = await api<{ data: any[] }>("exercises");
-        console.log(response.data);  // Log the data to check if it's reversed
+        const response = await getAll();
         this.exercises = response.data;  // Store exercises in the component state
       } catch (error) {
         console.error("Error fetching exercises:", error);
       }
     },
-  },
-};
+    async addExercise() {
+      if (!this.newExercise.title.trim() || !this.newExercise.description.trim()) {
+        alert("Title and Description cannot be empty.");
+        return;
+      }
+
+      try {
+        const response = await create(this.newExercise as Exercise);
+        this.exercises.push(response.data);  // Add the new exercise to the list
+        this.newExercise = { title: '', description: '', difficulty: 'Easy' };  // Reset the form
+      } catch (error) {
+        console.error("Error adding exercise:", error);
+      }
+    },
+    async deleteExercise(id: number) {
+      try {
+        await remove(id);
+        this.exercises = this.exercises.filter(exercise => exercise.id !== id);  // Remove the exercise from the list
+      } catch (error) {
+        console.error("Error deleting exercise:", error);
+      }
+    },
+    async editExercise(id: number) {
+      try {
+        const response = await getById(id);
+        this.editingExercise = response.data;  // Set the exercise to be edited
+      } catch (error) {
+        console.error("Error fetching exercise:", error);
+      }
+    },
+    async updateExercise() {
+      if (!this.editingExercise) return;
+
+      try {
+        const response = await update(this.editingExercise);
+        const index = this.exercises.findIndex(exercise => exercise.id === this.editingExercise!.id);
+        if (index !== -1) {
+          this.exercises.splice(index, 1, response.data);  // Update the exercise in the list
+        }
+        this.editingExercise = null;  // Reset the editing state
+      } catch (error) {
+        console.error("Error updating exercise:", error);
+      }
+    },
+    cancelEdit() {
+      this.editingExercise = null;  // Reset the editing state
+    }
+  }
+});
 </script>
 
 <style scoped>
@@ -119,6 +198,36 @@ body {
   font-size: 1em;
   border: 1px solid #000000;
   border-radius: 5px;
+}
+
+/* Add Exercise Form */
+.add-exercise {
+  margin-bottom: 20px;
+}
+
+.add-exercise input,
+.add-exercise select {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.add-exercise button {
+  padding: 10px 20px;
+  font-size: 1em;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-exercise button:hover {
+  background-color: #0056b3;
 }
 
 /* Exercise Items List */
