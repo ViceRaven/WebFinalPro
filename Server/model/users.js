@@ -1,4 +1,4 @@
-/** @type {{ exercises: Exercise[] }} */
+/** @type {{ items: User[] }} */
 const data = require("../data/users.json");
 const { getConnection } = require("./supabase");
 const conn = getConnection();
@@ -18,16 +18,16 @@ const conn = getConnection();
  * @returns {Promise<DataListEnvelope<User>>}
  */
 async function getAll() {
-    const { data, error, count } = await conn
-        .from("users")
-        .select("*", { count: "estimated" }) //* means get all the data in that field
-        .order('id', { ascending: true }); // Ensure the users are sorted by id in ascending order
-    return {
-        isSuccess: !error,
-        message: error?.message,
-        data: data,
-        total: count,
-    };
+  const { data, error, count } = await conn
+    .from("users")
+    .select("*", { count: "estimated" })
+    .order('id', { ascending: true });
+  return {
+    isSuccess: !error,
+    message: error?.message,
+    data: data,
+    total: count,
+  };
 }
 
 /**
@@ -36,83 +36,72 @@ async function getAll() {
  * @returns {Promise<DataEnvelope<User>>}
  */
 async function get(id) {
-    const { data, error } = await conn.from("users").select("*").eq("id", id);
-    return {
-        isSuccess: !error,
-        message: error?.message,
-        data: data,
-    };
+  const { data, error } = await conn
+    .from("users")
+    .select("*")
+    .eq("id", id)
+    .single();
+  return {
+    isSuccess: !error,
+    message: error?.message,
+    data: data,
+  };
 }
 
 /**
- * Add a new user
+ * Add a user
  * @param {User} user
  * @returns {Promise<DataEnvelope<User>>}
  */
 async function add(user) {
-  
-    const { data, error } = await conn
-        .from('users')
-        .insert([user]);
+  const { data, error } = await conn
+    .from("users")
+    .insert([
+      {
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        profilePic: user.profilePic,
+        adminAccess: user.adminAccess,
+      },
+    ])
+    .select("*")
+    .single();
 
-    if (error) {
-        throw error;
-    }
-
-    return {
-        isSuccess: true,
-        data: data[0],
-    };
-
-    
+  return {
+    isSuccess: !error,
+    message: error?.message,
+    data: data,
+  };
 }
+
+
 
 /**
  * Update a user
  * @param {number} id
  * @param {User} user
- * @returns {Promise<DataEnvelope<Users>>}
+ * @returns {Promise<DataEnvelope<User>>}
  */
 async function update(id, user) {
-    try {
-        // Check if the record exists
-        const { data: existingData, error: getError } = await conn
-            .from('users')
-            .select('*')
-            .eq('id', id)
-            .single();
+  const { data, error } = await conn
+    .from("users")
+    .update({
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profilePic: user.profilePic,
+      adminAccess: user.adminAccess,
+    })
+    .eq("id", id)
+    .select("*")
+    .single();
 
-        if (getError) {
-            console.error('Error fetching user:', getError);
-            throw new Error('User not found');
-        }
-
-        // Perform the update
-        const { data, error } = await conn
-            .from('users')
-            .update(user)
-            .eq('id', id)
-            .select(); // Ensure the updated data is returned
-
-        if (error) {
-            console.error('Error updating user:', error);
-            throw error;
-        }
-
-        if (!data || data.length === 0) {
-            const errorMessage = 'Update failed or no data returned';
-            console.error(errorMessage);
-            throw new Error(errorMessage);
-        }
-
-        return {
-            isSuccess: true,
-            data: data[0],
-        };
-    } catch (err) {
-        console.error('Unexpected error:', err);
-        throw err;
-    }
+  return {
+    isSuccess: !error,
+    message: error?.message,
+    data: data,
+  };
 }
 
 /**
@@ -121,26 +110,25 @@ async function update(id, user) {
  * @returns {Promise<DataEnvelope<number>>}
  */
 async function remove(id) {
-    const { data, error } = await conn
-        .from('users')
-        .delete()
-        .eq('id', id);
+  const { data, error } = await conn
+    .from("users")
+    .delete()
+    .eq("id", id)
+    .select("*")
+    .single();
 
-    if (error) {
-        throw error;
-    }
-
-    return {
-        isSuccess: true,
-        message: "User deleted",
-        data: id,
-    };
+  return {
+    isSuccess: !error,
+    message: error?.message,
+    data: data,
+  };
 }
 
 module.exports = {
-    getAll,
-    get,
-    add,
-    update,
-    remove,
+  getAll,
+  get,
+  add,
+  update,
+  remove,
+
 };

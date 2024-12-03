@@ -100,11 +100,6 @@ export default defineComponent({
       }
     },
     async addExercise() {
-      if (!this.newExercise.title.trim() || !this.newExercise.description.trim()) {
-        alert("Title and Description cannot be empty.");
-        return;
-      }
-
       try {
         const response = await create(this.newExercise as Exercise);
         this.exercises.push(response.data);  // Add the new exercise to the list

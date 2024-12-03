@@ -36,13 +36,17 @@ async function getAll() {
  * @returns {Promise<DataEnvelope<Exercise>>}
  */
 async function get(id) {
-    const { data, error } = await conn.from("exercises").select("*").eq("id", id);
+    const { data, error } = await conn
+      .from("exercises")
+      .select("*")
+      .eq("id", id)
+      .single();
     return {
-        isSuccess: !error,
-        message: error?.message,
-        data: data,
+      isSuccess: !error,
+      message: error?.message,
+      data: data,
     };
-}
+  }
 
 /**
  * Add a new exercise
@@ -50,18 +54,31 @@ async function get(id) {
  * @returns {Promise<DataEnvelope<Exercise>>}
  */
 async function add(exercise) {
-    const { data, error } = await conn
-        .from('exercises')
-        .insert([exercise]);
-
-    if (error) {
-        throw error;
-    }
-
-    return {
-        isSuccess: true,
-        data: data[0],
-    };
+    try {
+        const { data, error } = await conn
+          .from('exercises')
+          .insert([exercise])
+          .select();  // Ensure the inserted data is returned
+    
+        if (error) {
+          console.error("Error adding exercise:", error.message);
+          throw error;
+        }
+    
+        if (!data || data.length === 0) {
+          const errorMessage = "No data returned from insert operation";
+          console.error(errorMessage);
+          throw new Error(errorMessage);
+        }
+    
+        return {
+          isSuccess: true,
+          data: data[0],
+        };
+      } catch (err) {
+        console.error("Unexpected error in add function:", err);
+        throw err;
+      }
 }
 
 /**
@@ -73,7 +90,8 @@ async function add(exercise) {
 async function update(id, exercise) {
     try {
         // Check if the record exists
-        const { data: existingData, error: getError } = await conn
+        const { data: getData, error: getError } = await conn
+            
             .from('exercises')
             .select('*')
             .eq('id', id)

@@ -16,7 +16,7 @@ MyHeader: MyValue
 }
 
 ###
-GET http://localhost:3003/api/v1/users
+GET http://localhost:3003/api/v1/tuna
 
 ###
 GET http://localhost:3003/api/v1/exercises

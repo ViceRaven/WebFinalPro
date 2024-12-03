@@ -10,6 +10,11 @@
         placeholder="Search users..."
         class="search-input"
       />
+      <select v-model="selectedRole" class="role-select">
+        <option value="">All Roles</option>
+        <option value="Admin">Admin</option>
+        <option value="User">User</option>
+      </select>
     </div>
 
     <!-- Add User Form -->
@@ -34,7 +39,7 @@
           <p class="user-email">{{ user.email }}</p>
           <p class="user-role">Role: <strong>{{ user.adminAccess ? 'Admin' : 'User' }}</strong></p>
           <img :src="user.profilePic" alt="Profile Picture" class="profile-pic" />
-          <button @click="deleteUser(user.id)">Delete</button>
+          <button @click="deleteUser(user.id)" :disabled="user.adminAccess">Delete</button>
           <button @click="editUser(user.id)">Edit</button>
         </div>
       </li>
@@ -67,6 +72,7 @@ export default defineComponent({
     return {
       users: [] as User[],  // Store users here
       searchQuery: '',  // Bind to search input
+      selectedRole: '',  // Bind to role filter
       newUser: { firstName: '', lastName: '', email: '', profilePic: '', adminAccess: false },  // New user data
       editingUser: null as User | null  // User being edited
     };
@@ -78,9 +84,12 @@ export default defineComponent({
     filteredUsers() {
       // Filter users based on search query
       return this.users.filter(user => {
-        return user.firstName.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
-               user.lastName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-               user.email.toLowerCase().includes(this.searchQuery.toLowerCase());
+        const firstName = user.firstName ? user.firstName.toLowerCase() : '';
+        const lastName = user.lastName ? user.lastName.toLowerCase() : '';
+        const email = user.email ? user.email.toLowerCase() : '';
+        return firstName.includes(this.searchQuery.toLowerCase()) || 
+               lastName.includes(this.searchQuery.toLowerCase()) ||
+               email.includes(this.searchQuery.toLowerCase());
       });
     }
   },
@@ -88,6 +97,7 @@ export default defineComponent({
     async fetchUsers() {
       try {
         const response = await getAll();
+        console.log('Fetched users:', response.data);  // Log the fetched data
         this.users = response.data;  // Store users in the component state
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -101,8 +111,13 @@ export default defineComponent({
 
       try {
         const response = await create(this.newUser as User);
-        this.users.push(response.data);  // Add the new user to the list
-        this.newUser = { firstName: '', lastName: '', email: '', profilePic: '', adminAccess: false };  // Reset the form
+        if (response && response.data) {
+          console.log('Added user:', response.data);  // Log the added user
+          this.users.push(response.data);  // Add the new user to the list
+          this.newUser = { firstName: '', lastName: '', email: '', profilePic: '', adminAccess: false };  // Reset the form
+        } else {
+          console.error("Error adding user: No data returned");
+        }
       } catch (error) {
         console.error("Error adding user:", error);
       }
@@ -118,7 +133,8 @@ export default defineComponent({
     async editUser(id: number) {
       try {
         const response = await getById(id);
-        this.editingUser = response.data;  // Set the user to be edited
+        console.log('Editing user:', response.data);  // Log the user being edited
+        this.editingUser = { ...response.data };  // Set the user to be edited
       } catch (error) {
         console.error("Error fetching user:", error);
       }
@@ -128,6 +144,7 @@ export default defineComponent({
 
       try {
         const response = await update(this.editingUser);
+        console.log('Updated user:', response.data);  // Log the updated user
         const index = this.users.findIndex(user => user.id === this.editingUser!.id);
         if (index !== -1) {
           this.users.splice(index, 1, response.data);  // Update the user in the list
@@ -138,6 +155,7 @@ export default defineComponent({
       }
     },
     cancelEdit() {
+      console.log('Edit cancelled');  // Log the cancel action
       this.editingUser = null;  // Reset the editing state
     }
   }
@@ -179,10 +197,18 @@ body {
 }
 
 .search-input {
-  width: 100%;
+  width: 70%;
   padding: 8px;
   font-size: 1em;
   border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.role-select {
+  width: 25%;
+  padding: 8px;
+  font-size: 1em;
+  border: 1px solid #000000;
   border-radius: 5px;
 }
 

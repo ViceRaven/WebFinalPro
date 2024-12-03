@@ -47,3 +47,8 @@ exercises posting also doesnt work
 
 So got the exercisedatabse to be able to add and deleted exercises and edit them and have it be reflected oin supa based
 The issue now is that the newly created exercise starts from the last id +1 idk if thats gonna mess some stuff up.
+
+
+Ok so i need to get the edit user to work for the admin page and the exercise database
+
+Need to copy the users.js and modify it right now i need to fix why upating works on the page but it doesnt change the thing in supabase 
