@@ -42,23 +42,22 @@
           <button @click="deleteUser(user.id)" :disabled="user.adminAccess">Delete</button>
           <button @click="editUser(user.id)">Edit</button>
         </div>
+        <!-- Edit User Form -->
+        <div v-if="editingUser && editingUser.id === user.id" class="edit-user">
+          <h2>Edit User</h2>
+          <input v-model="editingUser.firstName" placeholder="First Name" />
+          <input v-model="editingUser.lastName" placeholder="Last Name" />
+          <input v-model="editingUser.email" placeholder="Email" />
+          <input v-model="editingUser.profilePic" placeholder="Profile Picture URL" />
+          <select v-model="editingUser.adminAccess">
+            <option :value="true">Admin</option>
+            <option :value="false">User</option>
+          </select>
+          <button @click="updateUser">Update</button>
+          <button @click="cancelEdit">Cancel</button>
+        </div>
       </li>
     </ul>
-
-    <!-- Edit User Form -->
-    <div v-if="editingUser" class="edit-user">
-      <h2>Edit User</h2>
-      <input v-model="editingUser.firstName" placeholder="First Name" />
-      <input v-model="editingUser.lastName" placeholder="Last Name" />
-      <input v-model="editingUser.email" placeholder="Email" />
-      <input v-model="editingUser.profilePic" placeholder="Profile Picture URL" />
-      <select v-model="editingUser.adminAccess">
-        <option :value="true">Admin</option>
-        <option :value="false">User</option>
-      </select>
-      <button @click="updateUser">Update User</button>
-      <button @click="cancelEdit">Cancel</button>
-    </div>
   </div>
 </template>
 
@@ -299,6 +298,15 @@ body {
   width: 50px;
   height: 50px;
   border-radius: 50%;
+}
+
+/* Edit User Form */
+.edit-user {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 /* Add padding to the last item to avoid double borders */

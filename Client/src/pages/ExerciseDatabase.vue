@@ -1,6 +1,6 @@
 <template>
   <div class="exercise-list">
-    <h1 class="title">Exercise List</h1>
+    <h1 class="title">Exercise Database</h1>
 
     <!-- Search and Filter Controls -->
     <div class="filters">
@@ -41,22 +41,21 @@
           <button @click="deleteExercise(exercise.id)">Delete</button>
           <button @click="editExercise(exercise.id)">Edit</button>
         </div>
+        <!-- Edit Exercise Form -->
+        <div v-if="editingExercise && editingExercise.id === exercise.id" class="edit-exercise">
+          <h2>Edit Exercise</h2>
+          <input v-model="editingExercise.title" placeholder="Title" />
+          <input v-model="editingExercise.description" placeholder="Description" />
+          <select v-model="editingExercise.difficulty">
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+          </select>
+          <button @click="updateExercise">Update Exercise</button>
+          <button @click="cancelEdit">Cancel</button>
+        </div>
       </li>
     </ul>
-
-    <!-- Edit Exercise Form -->
-    <div v-if="editingExercise" class="edit-exercise">
-      <h2>Edit Exercise</h2>
-      <input v-model="editingExercise.title" placeholder="Title" />
-      <input v-model="editingExercise.description" placeholder="Description" />
-      <select v-model="editingExercise.difficulty">
-        <option value="Easy">Easy</option>
-        <option value="Medium">Medium</option>
-        <option value="Hard">Hard</option>
-      </select>
-      <button @click="updateExercise">Update Exercise</button>
-      <button @click="cancelEdit">Cancel</button>
-    </div>
   </div>
 </template>
 
@@ -100,6 +99,11 @@ export default defineComponent({
       }
     },
     async addExercise() {
+      if (!this.newExercise.title.trim() || !this.newExercise.description.trim()) {
+        alert("Title and Description cannot be empty.");
+        return;
+      }
+
       try {
         const response = await create(this.newExercise as Exercise);
         this.exercises.push(response.data);  // Add the new exercise to the list
@@ -277,17 +281,17 @@ body {
   color: #ff2525; /* Change the color to blue */
 }
 
+/* Edit Exercise Form */
+.edit-exercise {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
 /* Add padding to the last item to avoid double borders */
 .exercise-items li:last-child {
   border-bottom: none;
-}
-
-.difficulty-select {
-  width: 25%;
-  padding: 8px;
-  font-size: 1em;
-  border: 1px solid #000000;
-  border-radius: 5px;
-  color: #333;
 }
 </style>
