@@ -11,9 +11,11 @@
         <li class="dropdown">
           <span>Users</span>
           <ul class="dropdown-content">
-            <router-link to="/Rachel"><li @click="handleUserClick('Rachel', 'https://i.redd.it/dy6aw0azuicc1.jpeg', true, '/Rachel')">Rachel</li></router-link>
-            <router-link to="/Max"><li @click="handleUserClick('Max', 'https://upload.wikimedia.org/wikipedia/en/2/20/MaxCaulfield.png', false, '/Max')">Max</li></router-link>
-            <router-link to="/Chloe"><li @click="handleUserClick('Chloe', 'https://upload.wikimedia.org/wikipedia/en/9/95/ChloePriceLifeIsStrange.png', false, '/Chloe')">Chloe</li></router-link>
+            <router-link v-for="user in users" :key="user.id" :to="`/${user.firstName}`">
+              <li @click="handleUserClick(user.firstName, user.profilePic, user.adminAccess, `/${user.firstName}`)">
+                {{ user.firstName }}
+              </li>
+            </router-link>
           </ul>
         </li>
       </ul>
@@ -30,35 +32,46 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { getAll } from '@/models/users';  // Adjust the import according to your folder structure
+import type { User } from '@/models/users';  // Import the User type
 
 const loggedInUser = ref<{ name: string, picture: string, adminAccess: boolean } | null>(null);
-const router = useRouter();
+const users = ref<User[]>([]);
 
-function loginUser(name: string, picture: string, adminAccess: boolean) {
+const fetchUsers = async () => {
+  try {
+    const response = await getAll();
+    users.value = response.data;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+  }
+};
+
+onMounted(() => {
+  fetchUsers();
+});
+
+const handleUserClick = (name: string, picture: string, adminAccess: boolean, path: string) => {
   loggedInUser.value = { name, picture, adminAccess };
-}
+  useRouter().push(path);
+};
 
-function logoutUser() {
+const logoutUser = () => {
   loggedInUser.value = null;
-  router.push('/');
-}
-
-function handleUserClick(name: string, picture: string, adminAccess: boolean, route: string) {
-  loginUser(name, picture, adminAccess);
-  router.push(route);
-}
+  useRouter().push('/');
+};
 </script>
 
 <style scoped>
 .navbar {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 10px;
+  align-items: center;
+  padding: 10px 20px;
   background-color: #333;
-  flex-wrap: wrap; /* Ensure the navbar wraps properly */
+  color: #fff;
 }
 
 .left-section {
@@ -67,7 +80,7 @@ function handleUserClick(name: string, picture: string, adminAccess: boolean, ro
 }
 
 .logo {
-  margin-right: 20px;
+  margin-right: 10px;
 }
 
 .nav-links {
@@ -77,41 +90,31 @@ function handleUserClick(name: string, picture: string, adminAccess: boolean, ro
 }
 
 .nav-links li {
-  color: white;
   position: relative;
 }
 
-.nav-links li a {
-  color: white;
+.nav-links a {
+  color: #fff;
   text-decoration: none;
-}
-
-.nav-links li a:hover {
-  text-decoration: underline;
-}
-
-.dropdown {
-  cursor: pointer;
 }
 
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: #444;
+  background-color: #fff;
+  color: #333;
   min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   z-index: 1;
 }
 
 .dropdown-content li {
-  color: white;
   padding: 12px 16px;
-  text-decoration: none;
-  display: block;
+  cursor: pointer;
 }
 
 .dropdown-content li:hover {
-  background-color: #555;
+  background-color: #ddd;
 }
 
 .dropdown:hover .dropdown-content {
@@ -121,50 +124,29 @@ function handleUserClick(name: string, picture: string, adminAccess: boolean, ro
 .user-info {
   display: flex;
   align-items: center;
-  color: white;
+  gap: 10px;
 }
 
 .user-picture {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  margin-right: 10px;
-  cursor: pointer;
-}
-
-.user-info a {
-  color: white;
-  text-decoration: none;
-}
-
-.user-info a:hover {
-  text-decoration: underline;
 }
 
 .logout-button {
-  background-color: #f44336;
-  color: white;
+  background-color: #ff2525;
+  color: #fff;
   border: none;
   padding: 5px 10px;
   cursor: pointer;
-  margin-left: 10px;
+  border-radius: 5px;
 }
 
 .logout-button:hover {
-  background-color: #d32f2f;
+  background-color: #ff0000;
 }
 
 .admin-link {
   margin-left: 20px;
-}
-
-.admin-link a {
-  color: #FFD700;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.admin-link a:hover {
-  text-decoration: underline;
 }
 </style>

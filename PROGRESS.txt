@@ -52,3 +52,6 @@ The issue now is that the newly created exercise starts from the last id +1 idk 
 Ok so i need to get the edit user to work for the admin page and the exercise database
 
 Need to copy the users.js and modify it right now i need to fix why upating works on the page but it doesnt change the thing in supabase 
+
+
+Need to get navbar to take the user to the exercise page.
