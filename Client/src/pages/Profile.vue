@@ -18,10 +18,10 @@
     <!-- Edit Profile Form -->
     <div v-if="isEditing && currentUser" class="edit-user">
       <h2>Edit Profile</h2>
-      <input v-model="editingUser.firstName" placeholder="First Name" />
-      <input v-model="editingUser.lastName" placeholder="Last Name" />
-      <input v-model="editingUser.email" placeholder="Email" />
-      <input v-model="editingUser.profilePic" placeholder="Profile Picture URL" />
+      <input v-if="editingUser" v-model="editingUser.firstName" placeholder="First Name" />
+      <input v-if="editingUser" v-model="editingUser.lastName" placeholder="Last Name" />
+      <input v-if="editingUser" v-model="editingUser.email" placeholder="Email" />
+      <input v-if="editingUser" v-model="editingUser.profilePic" placeholder="Profile Picture URL" />
       
       <div class="edit-buttons">
         <button @click="updateProfile" class="update-btn">Update Profile</button>
