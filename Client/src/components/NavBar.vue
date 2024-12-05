@@ -4,8 +4,6 @@
       <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="30" height="30" />
       <ul class="nav-links">
         <li><router-link to="/">Home</router-link></li>
-        <li><router-link to="/About">About</router-link></li>
-        <li><router-link to="/Contact/Index">Contact</router-link></li>
         <li><router-link to="/ExerciseDatabase">Exercise Database</router-link></li> 
         <li v-if="loggedInUser"><router-link to="/Social">Social</router-link></li> 
       </ul>

@@ -46,6 +46,9 @@
   
       const fetchCurrentUser = async () => {
         try {
+          if (!loggedInUser.value) {
+            throw new Error("User is not logged in");
+          }
           const response = await getById(loggedInUser.value.id);
           currentUser.value = response.data;
         } catch (error) {
