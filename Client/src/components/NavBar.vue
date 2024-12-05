@@ -11,18 +11,17 @@
         <li class="dropdown">
           <span>Users</span>
           <ul class="dropdown-content">
-            <router-link v-for="user in users" :key="user.id" :to="`/${user.firstName}`">
-              <li @click="handleUserClick(user.firstName, user.profilePic, user.adminAccess, `/${user.firstName}`)">
-                {{ user.firstName }}
-              </li>
-            </router-link>
+            <li v-for="user in users" :key="user.id" @click="handleUserClick(user)">
+              {{ user.firstName }}
+            </li>
           </ul>
         </li>
       </ul>
     </div>
     <div v-if="loggedInUser" class="user-info">
       <img :src="loggedInUser.picture" alt="User Picture" class="user-picture" />
-      <router-link :to="`/${loggedInUser.name.toLowerCase()}`">{{ loggedInUser.name }}</router-link>
+      <router-link :to="'/ExercisePage'">{{ loggedInUser.name }}</router-link>
+      <router-link to="/Profile" class="profile-management-link">Profile Management</router-link>
       <button @click="logoutUser" class="logout-button">Sign Out</button>
     </div>
     <div v-if="loggedInUser && loggedInUser.adminAccess" class="admin-link">
@@ -34,11 +33,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { getAll } from '@/models/users';  // Adjust the import according to your folder structure
-import type { User } from '@/models/users';  // Import the User type
+import { getAll } from '@/models/users';
+import type { User } from '@/models/users';
 
 const loggedInUser = ref<{ name: string, picture: string, adminAccess: boolean } | null>(null);
 const users = ref<User[]>([]);
+const router = useRouter();
 
 const fetchUsers = async () => {
   try {
@@ -53,14 +53,18 @@ onMounted(() => {
   fetchUsers();
 });
 
-const handleUserClick = (name: string, picture: string, adminAccess: boolean, path: string) => {
-  loggedInUser.value = { name, picture, adminAccess };
-  useRouter().push(path);
+const handleUserClick = (user: User) => {
+  if (loggedInUser.value) {
+    alert("Please sign out before changing users.");
+    return;
+  }
+  loggedInUser.value = { name: user.firstName, picture: user.profilePic, adminAccess: user.adminAccess };
+  router.push({ name: 'ExercisePage', params: { userId: user.id } });
 };
 
 const logoutUser = () => {
   loggedInUser.value = null;
-  useRouter().push('/');
+  router.push('/');
 };
 </script>
 
@@ -148,5 +152,20 @@ const logoutUser = () => {
 
 .admin-link {
   margin-left: 20px;
+}
+
+.profile-management-link {
+  padding: 5px 10px;
+  font-size: 1em;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.profile-management-link:hover {
+  background-color: #0056b3;
 }
 </style>

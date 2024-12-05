@@ -53,8 +53,8 @@
             <option :value="true">Admin</option>
             <option :value="false">User</option>
           </select>
-          <button @click="updateUser">Update</button>
-          <button @click="cancelEdit">Cancel</button>
+          <button @click="updateUser">Update </button>
+          <button @click="cancelEdit"> Cancel </button>
         </div>
       </li>
     </ul>
