@@ -2,7 +2,7 @@
  */
 
 
-const API_URL = 'http://localhost:3003/api/v1/'
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3003/api/v1/'
 
 export function rest<T>(url: string, data?: any, method?: string): Promise<T> {
   return fetch(url, {
