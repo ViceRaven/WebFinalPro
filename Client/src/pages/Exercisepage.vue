@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1>Chloe's Exercise Data</h1>
+    <h1> Exercise Data</h1>
     <div class="card">
       <h2>Today</h2>
       <ul>
