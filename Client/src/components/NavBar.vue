@@ -8,14 +8,6 @@
         <li><router-link to="/Contact/Index">Contact</router-link></li>
         <li><router-link to="/ExerciseDatabase">Exercise Database</router-link></li> <!-- Link to Exercise Database page -->
         <li v-if="loggedInUser"><router-link to="/Social">Social</router-link></li> <!-- Conditionally display Social link -->
-        <li class="dropdown">
-          <span>Users</span>
-          <ul class="dropdown-content">
-            <li v-for="user in users" :key="user.id" @click="handleUserClick(user)">
-              {{ user.firstName }}
-            </li>
-          </ul>
-        </li>
       </ul>
     </div>
     <div v-if="loggedInUser" class="user-info">
@@ -27,43 +19,30 @@
     <div v-if="loggedInUser && loggedInUser.adminAccess" class="admin-link">
       <router-link to="/Admin">Admin</router-link>
     </div>
+    <div v-else-if="!loggedInUser" class="login-link">
+      <router-link to="/Login" class="login-button">Login</router-link>
+    </div>
   </nav>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { getAll } from '@/models/users';
-import type { User } from '@/models/users';
+import { useLoggedInUser } from '@/models/useLoggedInUser';
 
-const loggedInUser = ref<{ name: string, picture: string, adminAccess: boolean } | null>(null);
-const users = ref<User[]>([]);
+const { loggedInUser, setLoggedInUser, clearLoggedInUser } = useLoggedInUser();
 const router = useRouter();
 
-const fetchUsers = async () => {
-  try {
-    const response = await getAll();
-    users.value = response.data;
-  } catch (error) {
-    console.error("Error fetching users:", error);
-  }
-};
-
 onMounted(() => {
-  fetchUsers();
+  // Ensure loggedInUser is reactive
+  const storedUser = sessionStorage.getItem('loggedInUser');
+  if (storedUser) {
+    setLoggedInUser(JSON.parse(storedUser));
+  }
 });
 
-const handleUserClick = (user: User) => {
-  if (loggedInUser.value) {
-    alert("Please sign out before changing users.");
-    return;
-  }
-  loggedInUser.value = { name: user.firstName, picture: user.profilePic, adminAccess: user.adminAccess };
-  router.push({ name: 'ExercisePage', params: { userId: user.id } });
-};
-
 const logoutUser = () => {
-  loggedInUser.value = null;
+  clearLoggedInUser();
   router.push('/');
 };
 </script>
@@ -100,29 +79,6 @@ const logoutUser = () => {
 .nav-links a {
   color: #fff;
   text-decoration: none;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #fff;
-  color: #333;
-  min-width: 160px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-}
-
-.dropdown-content li {
-  padding: 12px 16px;
-  cursor: pointer;
-}
-
-.dropdown-content li:hover {
-  background-color: #ddd;
-}
-
-.dropdown:hover .dropdown-content {
-  display: block;
 }
 
 .user-info {
@@ -166,6 +122,25 @@ const logoutUser = () => {
 }
 
 .profile-management-link:hover {
+  background-color: #0056b3;
+}
+
+.login-link {
+  margin-left: 20px;
+}
+
+.login-button {
+  padding: 5px 10px;
+  font-size: 1em;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.login-button:hover {
   background-color: #0056b3;
 }
 </style>
