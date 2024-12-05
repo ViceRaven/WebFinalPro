@@ -1,5 +1,3 @@
-/*  B"H
- */
 const express = require("express");
 const app = express();
 const userController = require("./controllers/users");
@@ -46,9 +44,3 @@ app.listen(PORT, (err, data) => {
 });
 console.log("Step #3");
 
-/*  Four types of async methods
-    1. Node Style Callbacks
-    2. Pipelines
-    3. Promises
-    4. Async/Await
-*/

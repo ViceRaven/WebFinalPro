@@ -28,8 +28,8 @@
   <script setup lang="ts">
   import { ref, onMounted } from 'vue';
   import { useRouter } from 'vue-router';
-  import { getAll } from '@/models/users';  // Adjust the import according to your folder structure
-  import type { User } from '@/models/users';  // Import the User type
+  import { getAll } from '@/models/users';  
+  import type { User } from '@/models/users';  
   import { useLoggedInUser } from '@/models/useLoggedInUser';
   
   const users = ref<User[]>([]);
